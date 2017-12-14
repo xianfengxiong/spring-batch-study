@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>spring-batch-study</name>
-    <url>http://www.wanruxiong.cn</url>
+    <url>https://kimmking.gitbooks.io/springbatchreference/01_introduction/Spring_Batch_MySQL.html</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
