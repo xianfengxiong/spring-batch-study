@@ -51,8 +51,8 @@
 
     <!-- Reader bean for our simple CSV example -->
     <bean id="productReader" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
-        <property name="resource" value="classpath:sample.csv"/>
-        <!--<property name="resource" value="file:#{jobParameters['inputFile']}"/>-->
+        <!--<property name="resource" value="classpath:sample.csv"/>-->
+        <property name="resource" value="file:#{jobParameters['inputFile']}"/>
         <property name="linesToSkip" value="1"/>
         <property name="lineMapper">
             <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
@@ -69,5 +69,11 @@
     </bean>
 
     <bean id="productWriter" class="cn.wanru.springbatch.simple.writer.ProductItemWriter"/>
+
+    <bean id="productProcessor" class="cn.wanru.springbatch.simple.processor.ProductItemProcessor"/>
+
+    <bean id="archiveFileTasklet" class="cn.wanru.springbatch.simple.tasklet.ArchiveProductImportFileTasklet" scope="step">
+        <property name="inputFile" value="#{jobParameters['inputFile']}"/>
+    </bean>
 
 </beans>

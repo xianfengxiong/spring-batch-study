@@ -10,10 +10,13 @@
     <import resource="classpath:/applicationContext.xml"/>
     
     <job id="simpleFileImportJob" xmlns="http://www.springframework.org/schema/batch">
-        <step id="importFileStep">
+        <step id="importFileStep" next="archiveFileStep">
             <tasklet>
-                <chunk reader="productReader" writer="productWriter" commit-interval="5"/>
+                <chunk reader="productReader" processor="productProcessor" writer="productWriter" commit-interval="5"/>
             </tasklet>
+        </step>
+        <step id="archiveFileStep">
+            <tasklet ref="archiveFileTasklet"/>
         </step>
     </job>
 </beans>

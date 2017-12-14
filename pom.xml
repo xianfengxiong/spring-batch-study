@@ -113,6 +113,25 @@
             </plugin>
         </plugins>
         <finalName>spring-batch-study</finalName>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>sample.csv</exclude>
+                </excludes>
+                <includes>
+                    <include>*</include>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>sample.csv</include>
+                </includes>
+                <targetPath>${project.build.directory}</targetPath>
+            </resource>
+        </resources>
     </build>
 
 </project>
