@@ -18,10 +18,6 @@
         <property name="url" value="jdbc:mysql://localhost:3306/springbatch"/>
         <property name="username" value="caigin"/>
         <property name="password" value="caigin"/>
-        <!--<property name="testOnBorrow" value="true"/>-->
-        <!--<property name="testWhileIdle" value="true"/>-->
-        <!--<property name="validationQuery" value="select 1"/>-->
-        <!--<property name="validationInterval" value="30000"/>-->
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
