@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/beans/spring-context.xsd
+                http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
+
+    <import resource="classpath:/applicationContext.xml"/>
+
+    <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor"/>
+
+    <job id="job1" xmlns="http://www.springframework.org/schema/batch">
+        <split id="split1" next="step4" task-executor="taskExecutor">
+            <flow>
+                <step id="step1" next="step2">
+                    <tasklet>
+                        <chunk reader="provinceReader" writer="provinceWriter" commit-interval="1"/>
+                    </tasklet>
+                </step>
+                <step id="step2">
+                    <tasklet>
+                        <chunk reader="cityReader" writer="cityWriter" commit-interval="1"/>
+                    </tasklet>
+                </step>
+            </flow>
+            <flow>
+                <step id="step3">
+                    <tasklet method="merge" ref="merge"/>
+                </step>
+            </flow>
+        </split>
+        <step id="step4">
+            <tasklet ref="merge" method="merge2"/>
+        </step>
+    </job>
+
+    <bean id="provinceReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+        <property name="resource" value="classpath:province.csv"/>
+        <property name="linesToSkip" value="1"/>
+        <property name="lineMapper">
+            <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="delimiter" value=","/>
+                        <property name="names" value="id,name"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="cn.wanru.springbatch.concurrent.ProviceFieldSetMapper"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="provinceWriter" class="cn.wanru.springbatch.concurrent.ProvinceWriter"/>
+
+    <bean id="cityReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+        <property name="resource" value="classpath:city.csv"/>
+        <property name="linesToSkip" value="1"/>
+        <property name="lineMapper">
+            <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="delimiter" value=","/>
+                        <property name="names" value="id,pid,name"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="cn.wanru.springbatch.concurrent.CityFieldsetMapper"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="cityWriter" class="cn.wanru.springbatch.concurrent.CityWriter"/>
+
+    <bean id="merge" class="cn.wanru.springbatch.concurrent.Merge"/>
+</beans>
